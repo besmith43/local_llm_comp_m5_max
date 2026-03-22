@@ -1,0 +1,272 @@
+package views
+
+templ Plex() {
+	@Base() {
+		<div class="container mt-5">
+			<h1 class="mb-4">Plex Media Organizer</h1>
+
+			<!-- Folder List -->
+			<div id="folderList" class="mb-4">
+				<h2>Folders with Video Files</h2>
+				<div id="folderContainer" class="list-group">
+					<!-- Folders will be populated here by JavaScript -->
+				</div>
+			</div>
+
+			<!-- Movie Modal -->
+			<div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="movieModalLabel">Movie Details</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form id="movieForm">
+								<div class="mb-3">
+									<label for="movieTitle" class="form-label">Movie Title</label>
+									<input type="text" class="form-control" id="movieTitle" required>
+								</div>
+								<div class="mb-3">
+									<label for="movieYear" class="form-label">Year of Release</label>
+									<input type="number" class="form-control" id="movieYear" min="1900" max="2030" required>
+								</div>
+								<input type="hidden" id="selectedFolderPath">
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-primary" id="submitMovie">Submit</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- TV Show Modal -->
+			<div class="modal fade" id="tvshowModal" tabindex="-1" aria-labelledby="tvshowModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="tvshowModalLabel">TV Show Details</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form id="tvshowForm">
+								<div class="mb-3">
+									<label for="tvSeries" class="form-label">TV Series Title</label>
+									<select class="form-select" id="tvSeries" required>
+										<option value="">Select a series or choose "New Series"</option>
+									</select>
+								</div>
+								<div id="newSeriesContainer" class="mb-3 d-none">
+									<label for="newSeriesTitle" class="form-label">New Series Title</label>
+									<input type="text" class="form-control" id="newSeriesTitle">
+								</div>
+								<div class="mb-3">
+									<label for="tvSeason" class="form-label">Season Number</label>
+									<input type="number" class="form-control" id="tvSeason" min="1" required>
+								</div>
+								<div class="mb-3">
+									<label for="tvEpisode" class="form-label">Episode Number</label>
+									<input type="number" class="form-control" id="tvEpisode" min="1" required>
+								</div>
+								<input type="hidden" id="tvselectedFolderPath">
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-primary" id="submitTVShow">Submit</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// JavaScript for handling UI interactions
+			document.addEventListener('DOMContentLoaded', function() {
+				// Load folders on page load
+				loadFolders();
+
+				// Load TV series for the dropdown
+				loadTVSeries();
+
+				// Handle TV series dropdown change
+				document.getElementById('tvSeries').addEventListener('change', function() {
+					const newSeriesContainer = document.getElementById('newSeriesContainer');
+					if (this.value === '') {
+						newSeriesContainer.classList.add('d-none');
+					} else if (this.value === 'new') {
+						newSeriesContainer.classList.remove('d-none');
+					} else {
+						newSeriesContainer.classList.add('d-none');
+					}
+				});
+
+				// Handle movie form submission
+				document.getElementById('submitMovie').addEventListener('click', function() {
+					const form = document.getElementById('movieForm');
+					const title = document.getElementById('movieTitle').value;
+					const year = document.getElementById('movieYear').value;
+					const folderPath = document.getElementById('selectedFolderPath').value;
+
+					if (!title || !year || !folderPath) {
+						alert('Please fill in all fields');
+						return;
+					}
+
+					fetch('/api/move', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							folderPath: folderPath,
+							mediaType: 'movie',
+							title: title,
+							year: year
+						})
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.error) {
+							alert('Error: ' + data.error);
+						} else {
+							alert('File moved successfully to: ' + data.destination);
+							// Close modal and refresh folder list
+							const movieModal = bootstrap.Modal.getInstance(document.getElementById('movieModal'));
+							movieModal.hide();
+							loadFolders();
+							// Reset form
+							form.reset();
+							document.getElementById('selectedFolderPath').value = '';
+						}
+					})
+					.catch(error => {
+						alert('Error: ' + error);
+					});
+				});
+
+				// Handle TV show form submission
+				document.getElementById('submitTVShow').addEventListener('click', function() {
+					const form = document.getElementById('tvshowForm');
+					const seriesSelect = document.getElementById('tvSeries');
+					const seriesTitle = seriesSelect.value === 'new' ?
+						document.getElementById('newSeriesTitle').value :
+						seriesSelect.value;
+					const season = document.getElementById('tvSeason').value;
+					const episode = document.getElementById('tvEpisode').value;
+					const folderPath = document.getElementById('tvselectedFolderPath').value;
+
+					if (!seriesTitle || !season || !episode || !folderPath) {
+						alert('Please fill in all fields');
+						return;
+					}
+
+					fetch('/api/move', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							folderPath: folderPath,
+							mediaType: 'tvshow',
+							seriesTitle: seriesTitle,
+							season: parseInt(season),
+							episode: parseInt(episode),
+							isNewSeries: seriesSelect.value === 'new'
+						})
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.error) {
+							alert('Error: ' + data.error);
+						} else {
+							alert('File moved successfully to: ' + data.destination);
+							// Close modal and refresh folder list
+							const tvshowModal = bootstrap.Modal.getInstance(document.getElementById('tvshowModal'));
+							tvshowModal.hide();
+							loadFolders();
+							loadTVSeries(); // Refresh TV series list
+							// Reset form
+							form.reset();
+							document.getElementById('tvselectedFolderPath').value = '';
+							document.getElementById('newSeriesTitle').value = '';
+							seriesSelect.value = '';
+							document.getElementById('newSeriesContainer').classList.add('d-none');
+						}
+					})
+					.catch(error => {
+						alert('Error: ' + error);
+					});
+				});
+			});
+
+			function loadFolders() {
+				fetch('/api/folders')
+					.then(response => response.json())
+					.then(folders => {
+						const container = document.getElementById('folderContainer');
+						container.innerHTML = '';
+
+						if (folders.length === 0) {
+							container.innerHTML = '<p class="text-muted">No folders with video files found.</p>';
+							return;
+						}
+
+						folders.forEach(folder => {
+							const folderItem = document.createElement('div');
+							folderItem.className = 'list-group-item list-group-item-action';
+							folderItem.innerHTML = `
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">${folder.name}</h5>
+								</div>
+								<p class="mb-1">${folder.videoFiles.length} video file(s)</p>
+								<small>Files: ${folder.videoFiles.join(', ')}</small>
+							`;
+
+							folderItem.addEventListener('click', function() {
+								// Set folder path in both modals
+								document.getElementById('selectedFolderPath').value = folder.path;
+								document.getElementById('tvselectedFolderPath').value = folder.path;
+							});
+
+							container.appendChild(folderItem);
+						});
+					})
+					.catch(error => {
+						console.error('Error loading folders:', error);
+						document.getElementById('folderContainer').innerHTML =
+							'<p class="text-danger">Error loading folders</p>';
+					});
+			}
+
+			function loadTVSeries() {
+				fetch('/api/tvshows')
+					.then(response => response.json())
+					.then(series => {
+						const select = document.getElementById('tvSeries');
+						// Clear existing options except the first placeholder
+						select.innerHTML = '<option value="">Select a series or choose "New Series"</option>';
+
+						// Add existing series
+						series.forEach(show => {
+							const option = document.createElement('option');
+							option.value = show;
+							option.textContent = show;
+							select.appendChild(option);
+						});
+
+						// Add "New Series" option
+						const newOption = document.createElement('option');
+						newOption.value = 'new';
+						newOption.textContent = 'New Series (not in list)';
+						select.appendChild(newOption);
+					})
+					.catch(error => {
+						console.error('Error loading TV series:', error);
+					});
+			}
+		</script>
+	}
+}

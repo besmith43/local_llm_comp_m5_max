@@ -1,0 +1,31 @@
+package views
+
+templ Base() {
+	<!DOCTYPE html>
+	<html lang="en" >
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width,initial-scale=1"/>
+			<title>Go Plex Import</title>
+			<link rel="icon" href="images/favicon.png" type="image/png">
+			<link href="css/site.css" rel="stylesheet"/>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css" integrity="sha512-2bBQCjcnw658Lho4nlXJcc6WkV/UxpE/sAokbXPxQNGqmNdQrWqtw26Ns9kFF/yG792pKR1Sx8/Y1Lf1XN4GKA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+			<script src="js/site.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js" integrity="sha512-HvOjJrdwNpDbkGJIG2ZNqDlVqMo77qbs4Me4cah0HoDrfhrbA+8SBlZn1KrvAQw7cILLPFJvdwIgphzQmMm+Pw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.23.0/sweetalert2.all.min.js" integrity="sha512-J+4Nt/+nieSNJjQGCPb8jKf5/wv31QiQM10bOotEHUKc9tB1Pn0gXQS6XXPtDoQhHHao5poTnSByMInzafUqzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		</head>
+		<body hx-ext="response-targets">
+			<div class="theme-toggle-wrap">
+				<button id="themeToggle" type="button" class="btn btn-outline-light btn-sm" aria-label="Toggle dark mode">
+					<i class="fa-solid fa-moon"></i>
+					<span id="themeToggleLabel">Dark</span>
+				</button>
+			</div>
+			<main >
+				{ children... }
+			</main>
+		</body>
+	</html>
+}

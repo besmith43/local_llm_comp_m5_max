@@ -1,0 +1,226 @@
+/* Plex Importor Styles */
+
+:root {
+	--folder-card-bg: #f8f9fa;
+	--folder-card-border: #dee2e6;
+	--folder-card-hover-bg: #e9ecef;
+}
+
+[data-bs-theme="dark"] {
+	--folder-card-bg: #2b3035;
+	--folder-card-border: #495057;
+	--folder-card-hover-bg: #343a40;
+}
+
+/* Container and Header */
+.container {
+	max-width: 1200px;
+}
+
+h1 {
+	font-weight: 600;
+}
+
+/* Folder Grid */
+#folderGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 1.5rem;
+}
+
+/* Folder Card */
+.folder-card {
+	background-color: var(--folder-card-bg);
+	border: 1px solid var(--folder-card-border);
+	border-radius: 0.5rem;
+	transition: all 0.2s ease-in-out;
+	cursor: pointer;
+}
+
+.folder-card:hover {
+	background-color: var(--folder-card-hover-bg);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.folder-card .card-body {
+	padding: 1rem;
+}
+
+.folder-icon {
+	font-size: 2.5rem;
+	color: #0d6efd;
+	margin-bottom: 0.5rem;
+}
+
+[data-bs-theme="dark"] .folder-icon {
+	color: #6ea8fe;
+}
+
+.folder-name {
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.folder-meta {
+	font-size: 0.875rem;
+	color: #6c757d;
+}
+
+[data-bs-theme="dark"] .folder-meta {
+	color: #adb5bd;
+}
+
+.video-files-list {
+	margin-top: 0.75rem;
+	max-height: 120px;
+	overflow-y: auto;
+}
+
+.video-file-item {
+	display: flex;
+	align-items: center;
+	padding: 0.25rem 0;
+	font-size: 0.875rem;
+	border-bottom: 1px solid var(--folder-card-border);
+}
+
+.video-file-item:last-child {
+	border-bottom: none;
+}
+
+.video-file-icon {
+	margin-right: 0.5rem;
+	color: #198754;
+}
+
+.video-file-name {
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.video-file-size {
+	font-size: 0.75rem;
+	color: #6c757d;
+	margin-left: 0.5rem;
+}
+
+/* Loading and Empty States */
+#loadingState, #emptyState {
+	display: none;
+}
+
+#loadingState.visible, #emptyState.visible {
+	display: block;
+}
+
+/* Modal Styles */
+.modal-content {
+	border-radius: 0.5rem;
+}
+
+.modal-header {
+	background-color: var(--folder-card-bg);
+	border-bottom: 1px solid var(--folder-card-border);
+}
+
+.modal-footer {
+	border-top: 1px solid var(--folder-card-border);
+}
+
+/* Content Type Selection */
+.btn-group .btn-check:checked + .btn-outline-primary {
+	background-color: #0d6efd;
+	border-color: #0d6efd;
+	color: white;
+}
+
+[data-bs-theme="dark"] .btn-group .btn-check:checked + .btn-outline-primary {
+	background-color: #6ea8fe;
+	border-color: #6ea8fe;
+	color: #0b1727;
+}
+
+/* Form Styles */
+.content-form {
+	animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.form-label {
+	font-weight: 500;
+}
+
+.text-danger {
+	color: #dc3545 !important;
+}
+
+/* Alert Info */
+.alert-info {
+	background-color: rgba(13, 110, 253, 0.1);
+	border-color: #0d6efd;
+	color: #084298;
+}
+
+[data-bs-theme="dark"] .alert-info {
+	background-color: rgba(13, 110, 253, 0.2);
+	color: #6ea8fe;
+}
+
+/* Scrollbar Styling */
+.video-files-list::-webkit-scrollbar {
+	width: 6px;
+}
+
+.video-files-list::-webkit-scrollbar-track {
+	background: var(--folder-card-bg);
+	border-radius: 3px;
+}
+
+.video-files-list::-webkit-scrollbar-thumb {
+	background: var(--folder-card-border);
+	border-radius: 3px;
+}
+
+.video-files-list::-webkit-scrollbar-thumb:hover {
+	background: #6c757d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+	#folderGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.modal-dialog {
+		margin: 0.5rem;
+	}
+}
+
+/* Success/Error Messages */
+.swal2-title {
+	font-weight: 600;
+}
+
+/* Theme Toggle Position */
+.theme-toggle-wrap {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 1000;
+}

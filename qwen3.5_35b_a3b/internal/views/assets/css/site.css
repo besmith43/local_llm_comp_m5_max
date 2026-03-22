@@ -1,0 +1,31 @@
+.cursor-pointer {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cursor-pointer:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.card-body h6 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.theme-toggle-wrap {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+}
+
+main {
+    padding-top: 2rem;
+}
+
+/* Modal form spacing */
+.modal-body form .mb-3 {
+    margin-bottom: 1rem !important;
+}
