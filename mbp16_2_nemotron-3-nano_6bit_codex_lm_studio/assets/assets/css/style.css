@@ -1,0 +1,46 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+  background: #f9f9f9;
+}
+h1 {
+  color: #2c3e50;
+}
+button {
+  padding: 0.6rem 1.2rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+#foldersContainer {
+  margin-top: 1rem;
+}
+.folder {
+  padding: 0.5rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+.folder:hover {
+  background: #eaeaea;
+}
+.hidden {
+  display: none;
+}
+.error {
+  color: red;
+}
+.fields {
+  margin-top: 1rem;
+}
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+input[type=text],
+input[type=number],
+select {
+  padding: 0.4rem;
+  width: 100%;
+  box-sizing: border-box;
+}

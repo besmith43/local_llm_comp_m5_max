@@ -29,6 +29,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// API routes
+	e.GET("/", s.PlexHandler)
 	e.GET("/api/folders", s.getFoldersHandler)
 	e.GET("/api/tvshows", s.getTVShowsHandler)
 	e.POST("/api/move", s.moveFileHandler)

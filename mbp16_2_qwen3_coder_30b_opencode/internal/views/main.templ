@@ -1,0 +1,24 @@
+package views
+
+templ FolderGrid() {
+	<div class="row g-4">
+		<div id="folder-grid" class="col-12">
+			<!-- Folders will be rendered here by JavaScript -->
+		</div>
+	</div>
+}
+
+templ EmptyState() {
+	<div class="text-center py-5">
+		<div class="alert alert-info" role="alert">
+			<h4 class="alert-heading">No videos found</h4>
+			<p>No video files were found in the source directory. Check your SOURCE environment variable.</p>
+		</div>
+	</div>
+}
+
+templ RefreshButton() {
+	<button id="refresh-btn" class="btn btn-outline-primary mb-4" onclick="loadFolders()">
+		⟳ Refresh
+	</button>
+}

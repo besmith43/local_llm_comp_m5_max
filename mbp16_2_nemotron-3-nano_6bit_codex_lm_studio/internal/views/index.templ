@@ -1,0 +1,53 @@
+{{ define "index" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Plex Import</title>
+  <link rel="stylesheet" href="/assets/assets/css/style.css">
+</head>
+<body>
+  <h1>Plex Import Tool</h1>
+  <button id="scanBtn">Scan Source</button>
+
+  <div id="foldersContainer"></div>
+
+  <!-- Modal (hidden by default) -->
+  <div id="modalOverlay" class="hidden">
+    <div id="modalContent">
+      <div class="closeBtn" onclick="closeModal()">✖</div>
+      <h2>Import Video</h2>
+
+      <form id="importForm">
+        <label>
+          <input type="radio" name="type" value="movie" checked> Movie
+        </label>
+        <label>
+          <input type="radio" name="type" value="tv_show"> TV Show
+        </label>
+
+        <div id="movieFields" class="fields hidden">
+          <input type="text" name="title" placeholder="Title" required>
+          <input type="number" name="year" placeholder="Year" required>
+        </div>
+
+        <div id="tvFields" class="fields hidden">
+          <select id="seriesSelect" name="series">
+            <option value="">-- Select Series --</option>
+          </select>
+          <button id="newSeriesBtn" onclick="addNewSeries()">+ New Series</button>
+          <input type="text" name="season" placeholder="Season #" required>
+          <input type="number" name="episode" placeholder="Episode #" required>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <p id="errorMsg" class="error hidden"></p>
+    </div>
+  </div>
+
+  <script src="/assets/assets/js/app.js"></script>
+</body>
+</html>
+{{ end }}

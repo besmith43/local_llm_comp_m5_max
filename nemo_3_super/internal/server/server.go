@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"plex-importor/internal/views"
 	"strconv"
 	"strings"
 	"time"
@@ -113,7 +114,7 @@ func (s *Server) moveFileHandler(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "File moved successfully",
+		"message":     "File moved successfully",
 		"destination": destFile,
 	})
 }
@@ -230,6 +231,12 @@ func moveTVShow(sourceFile, seriesTitle string, season, episode int, destPath st
 	return destFile, nil
 }
 
+func (s *Server) PlexHandler(c echo.Context) error {
+	c.Response().Writer.WriteHeader(http.StatusOK)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
+	return views.Plex().Render(c.Request().Context(), c.Response().Writer)
+}
+
 // Request structures
 type folderInfo struct {
 	Path       string   `json:"path"`
@@ -238,12 +245,12 @@ type folderInfo struct {
 }
 
 type moveRequest struct {
-	FolderPath   string `json:"folderPath"`
-	MediaType    string `json:"mediaType"` // "movie" or "tvshow"
-	Title        string `json:"title,omitempty"`
-	Year         string `json:"year,omitempty"`
-	SeriesTitle  string `json:"seriesTitle,omitempty"`
-	Season       int    `json:"season,omitempty"`
-	Episode      int    `json:"episode,omitempty"`
-	IsNewSeries  bool   `json:"isNewSeries,omitempty"`
+	FolderPath  string `json:"folderPath"`
+	MediaType   string `json:"mediaType"` // "movie" or "tvshow"
+	Title       string `json:"title,omitempty"`
+	Year        string `json:"year,omitempty"`
+	SeriesTitle string `json:"seriesTitle,omitempty"`
+	Season      int    `json:"season,omitempty"`
+	Episode     int    `json:"episode,omitempty"`
+	IsNewSeries bool   `json:"isNewSeries,omitempty"`
 }

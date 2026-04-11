@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Importer</title>
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/site.js"></script>
+</head>
+<body>
+  <h1>Select a video file</h1>
+  <ul id="video-list"></ul>
+
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="close-modal">&times;</span>
+      <h2>Import Options</h2>
+      <select id="import-type">
+        <option value="movie">Movie</option>
+        <option value="tv">TV Show</option>
+      </select>
+
+      <!-- Movie fields -->
+      <div id="movie-fields" style="display:none;">
+        <input type="text" id="movie-title" placeholder="Title">
+        <input type="number" id="movie-year" placeholder="Year">
+      </div>
+
+      <!-- TV Show fields -->
+      <div id="tv-fields" style="display:none;">
+        <select id="tv-series">
+          <!-- Options will be filled dynamically -->
+        </select>
+        <input type="number" id="tv-season" placeholder="Season">
+        <input type="number" id="tv-episode" placeholder="Episode">
+        <input type="text" id="new-series-name" placeholder="New series name (optional)">
+      </div>
+
+      <button id="submit-import">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    const videoListEl = document.getElementById('video-list');
+    const modal = document.getElementById('modal');
+    const closeModal = document.getElementById('close-modal');
+    const importTypeSelect = document.getElementById('import-type');
+    const movieFields = document.getElementById('movie-fields');
+    const tvFields = document.getElementById('tv-fields');
+    const seriesSelect = document.getElementById('tv-series');
+    const newSeriesName = document.getElementById('new-series-name');
+    const submitBtn = document.getElementById('submit-import');
+
+    // Load video list on page load
+    async function loadVideoList() {
+      const resp = await fetch('/api/videos');
+      const videos = await resp.json();
+      videoListEl.innerHTML = '';
+      videos.forEach(v => {
+        const li = document.createElement('li');
+        li.textContent = v.name;
+        li.dataset.path = v.path;
+        li.addEventListener('click', () => selectVideo(v));
+      });
+    }
+
+    function selectVideo(video) {
+      // Store selected video path globally
+      window.selectedVideo = video;
+      modal.style.display = 'block';
+    }
+
+    closeModal.onclick = () => { modal.style.display = 'none'; };
+
+    importTypeSelect.onchange = () => {
+      if (importTypeSelect.value === 'movie') {
+        movieFields.style.display = 'block';
+        tvFields.style.display = 'none';
+      } else {
+        movieFields.style.display = 'none';
+        tvFields.style.display = 'block';
+        populateSeriesDropdown();
+      }
+    };
+
+    async function populateSeriesDropdown() {
+      // Placeholder: could fetch series list from server or hardcode
+      // For now, just empty
+    }
+
+    submitBtn.onclick = async () => {
+      const video = window.selectedVideo;
+      const type = importTypeSelect.value;
+      let payload;
+      if (type === 'movie') {
+        const title = document.getElementById('movie-title').value.trim();
+        const year = parseInt(document.getElementById('movie-year').value, 10);
+        payload = { videoPath: video.path, type, title, year };
+      } else {
+        const series = seriesSelect.value || newSeriesName.value.trim();
+        const season = parseInt(document.getElementById('tv-season').value, 10);
+        const episode = parseInt(document.getElementById('tv-episode').value, 10);
+        payload = { videoPath: video.path, type, series, season, episode };
+      }
+      const resp = await fetch('/api/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (resp.ok) {
+        alert('Import successful');
+        modal.style.display = 'none';
+        loadVideoList(); // refresh list
+      } else {
+        alert('Import failed');
+      }
+    };
+
+    // Initial load
+    loadVideoList();
+  </script>
+</body>
+</html>
